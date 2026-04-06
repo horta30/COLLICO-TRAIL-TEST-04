@@ -8,6 +8,25 @@
   <link href="https://unpkg.com/maplibre-gl@3.6.2/dist/maplibre-gl.css" rel="stylesheet"/>
   <script src="https://unpkg.com/maplibre-gl@3.6.2/dist/maplibre-gl.js"></script>
   <script src="assets/senderos.js"></script>
+  <!-- Firebase -->
+  <script type="module">
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js';
+    import { getDatabase, ref, set, onDisconnect } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js';
+    const firebaseConfig = {
+      apiKey: "AIzaSyBTAwr1qhX-_1QBzFD7Kamgzg59qzs8TLY",
+      databaseURL: "https://collico-parque-default-rtdb.firebaseio.com",
+      projectId: "collico-parque",
+      appId: "1:498758813679:web:61617f1581a30b9f6f981a"
+    };
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+    window._db = db;
+    window._ref = ref;
+    window._set = set;
+    window._onDisconnect = onDisconnect;
+    window._firebaseReady = true;
+    window.dispatchEvent(new Event('firebaseReady'));
+  </script>
   <style>
     :root {
       --bg:   #080C0A;
@@ -689,7 +708,11 @@ function initFromURL() {
   }
   if (trail) setTimeout(() => openPanel(trail), 700);
   if (ruta && RUTAS[ruta]) setTimeout(() => renderRuta(ruta), 700);
-  if (sessionStorage.getItem('collico_v')) setTimeout(startGPS, 900);
+  if (sessionStorage.getItem('collico_v')) {
+    if (window._firebaseReady) { initFirebaseMonitor(); }
+    else { window.addEventListener('firebaseReady', initFirebaseMonitor); }
+    setTimeout(startGPS, 900);
+  }
 }
 </script>
 </body>
