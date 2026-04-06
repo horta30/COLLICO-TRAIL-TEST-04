@@ -140,6 +140,9 @@ const RIPIO_ACCESO = [[-73.20286082470804, -39.81886928647535], [-73.20238475477
 // Índice en Collico 1 donde nace la bifurcación hacia Cascada (2.04 km)
 const BIFURCACION_COLLICO1_IDX = 225;
 
+// Índice en Mirador del Puma donde nace la bifurcación hacia Mirador Kunstmann (0.197 km)
+const BIFURCACION_PUMA_KUNSTMANN_IDX = 20;
+
 
 // =============================================================
 // RUTAS — Planificador desde Tótem de Acceso
@@ -168,11 +171,12 @@ const RUTAS = {
     id: 'mirador_kunstmann',
     nombre: 'Mirador Kunstmann',
     emoji: '🔭',
-    dist_total_km: 1.40,
-    tiempo_trek:  '35–45 min',
-    tiempo_trail: '15–22 min',
+    dist_total_km: 1.59,
+    tiempo_trek:  '40–50 min',
+    tiempo_trail: '20–28 min',
     pasos: [
       { tipo: 'ripio',   label: 'Ripio de acceso',   color: '#F5C242' },
+      { tipo: 'acceso',  id: 'mirador_puma', hasta_idx: BIFURCACION_PUMA_KUNSTMANN_IDX, label: 'Mirador del Puma (acceso)', color: '#40916C' },
       { tipo: 'sendero', id: 'mirador_kunstmann', label: 'Mirador Kunstmann', color: '#4CC9F0' }
     ]
   },
