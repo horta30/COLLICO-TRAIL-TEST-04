@@ -6,6 +6,21 @@
   <title>Collico · Registro</title>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet"/>
+  <!-- Firebase -->
+  <script type="module">
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js';
+    import { getDatabase, ref, set } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js';
+    const firebaseConfig = {
+      apiKey: "AIzaSyBTAwr1qhX-_1QBzFD7Kamgzg59qzs8TLY",
+      databaseURL: "https://collico-parque-default-rtdb.firebaseio.com",
+      projectId: "collico-parque",
+      appId: "1:498758813679:web:61617f1581a30b9f6f981a"
+    };
+    const app = initializeApp(firebaseConfig);
+    window._db = getDatabase(app);
+    window._ref = ref;
+    window._set = set;
+  </script>
   <style>
     :root {
       --bg:   #080C0A;
@@ -99,6 +114,16 @@
     }
     .submit:active { background:#5DD9BA; }
 
+    .consent-box {
+      display:flex; align-items:flex-start; gap:10px;
+      padding:13px 14px; margin-bottom:28px;
+      background:rgba(245,158,11,0.08);
+      border:1px solid rgba(245,158,11,0.2);
+      border-radius:12px;
+    }
+    .consent-icon { font-size:18px; flex-shrink:0; }
+    .consent-txt { font-size:12px; color:rgba(245,249,247,0.7); line-height:1.55; }
+
     .legal {
       text-align:center; font-size:10px;
       color:rgba(245,249,247,.2); margin-top:16px; line-height:1.8;
@@ -123,6 +148,11 @@
   <div class="kicker">Registro de visita</div>
   <h1>Tu acceso<br/>al bosque.</h1>
   <p class="sub">Regístrate para activar el GPS y recibir notificaciones en terreno.</p>
+
+  <div class="consent-box">
+    <span class="consent-icon">📡</span>
+    <span class="consent-txt">Tu ubicación GPS será compartida con el equipo del parque durante tu visita para garantizar tu seguridad en terreno.</span>
+  </div>
 
   <div class="gps-hint">
     <div class="gps-dot"></div>
@@ -157,11 +187,14 @@
 
 <script>
   function go() {
+    const uid = 'v_' + Date.now() + '_' + Math.random().toString(36).slice(2,7);
     const v = {
       nombre: document.getElementById('nombre').value.trim() || 'Visitante',
       email:  document.getElementById('email').value.trim(),
       tel:    document.getElementById('tel').value.trim(),
       actividad: 'trekking',
+      uid: uid,
+      monitoreo: true,
       ts: new Date().toISOString()
     };
     sessionStorage.setItem('collico_v', JSON.stringify(v));
