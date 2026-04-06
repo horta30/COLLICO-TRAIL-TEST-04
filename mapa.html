@@ -195,7 +195,7 @@
     <span class="plan-dest-em">🔭</span>
     <div class="plan-dest-info">
       <div class="plan-dest-name">Mirador Kunstmann</div>
-      <div class="plan-dest-dist">1.40 km desde Tótem</div>
+      <div class="plan-dest-dist">1.59 km desde Tótem</div>
     </div>
   </div>
   <div class="plan-dest" data-ruta="cascada" onclick="selectRuta('cascada',this)">
@@ -369,8 +369,24 @@ function loadTotem() {
 }
 
 function loadRipio() {
-  map.addSource('ripio', { type:'geojson', data:{ type:'Feature', geometry:{ type:'LineString', coordinates:RIPIO_ACCESO } } });
-  map.addLayer({ id:'ripio', type:'line', source:'ripio', layout:{'line-join':'round','line-cap':'round'}, paint:{'line-color':'#8B7B6B','line-width':2.5,'line-opacity':.55,'line-dasharray':[2,3]} });
+  map.addSource('ripio', {
+    type:'geojson',
+    data:{ type:'Feature', geometry:{ type:'LineString', coordinates:RIPIO_ACCESO }, properties:{} }
+  });
+  // Glow
+  map.addLayer({ id:'ripio-glow', type:'line', source:'ripio',
+    layout:{'line-join':'round','line-cap':'round'},
+    paint:{'line-color':'#F5C242','line-width':12,'line-opacity':0.15,'line-blur':6}
+  });
+  // Main amber dashed line
+  map.addLayer({ id:'ripio', type:'line', source:'ripio',
+    layout:{'line-join':'round','line-cap':'round'},
+    paint:{'line-color':'#F5C242','line-width':3.5,'line-opacity':0.9,'line-dasharray':[3,2]}
+  });
+  // Totem marker already shown — add a small label via popup on click
+  map.on('click','ripio', () => showNotif('🟡','Camino de Ripio','Tramo de acceso desde el Tótem · 0.46 km','#F5C242'));
+  map.on('mouseenter','ripio', () => map.getCanvas().style.cursor='pointer');
+  map.on('mouseleave','ripio', () => map.getCanvas().style.cursor='');
 }
 
 // ── ACTIVIDAD ──────────────────────────────────────────────
@@ -437,7 +453,8 @@ function renderRuta(rutaId) {
     if (map.getLayer('line-'+s.id)) map.setPaintProperty('line-'+s.id,'line-opacity',0.2);
     if (map.getLayer('glow-'+s.id)) map.setPaintProperty('glow-'+s.id,'line-opacity',0.05);
   });
-  if (map.getLayer('ripio')) map.setPaintProperty('ripio','line-opacity',0.2);
+  if (map.getLayer('ripio'))      map.setPaintProperty('ripio','line-opacity',0.2);
+  if (map.getLayer('ripio-glow')) map.setPaintProperty('ripio-glow','line-opacity',0.05);
 
   // Show summary
   document.getElementById('rs-title').textContent = ruta.emoji + ' ' + ruta.nombre;
@@ -474,7 +491,8 @@ function closeRuta() {
     if (map.getLayer('line-'+s.id)) map.setPaintProperty('line-'+s.id,'line-opacity',1);
     if (map.getLayer('glow-'+s.id)) map.setPaintProperty('glow-'+s.id,'line-opacity',0.1);
   });
-  if (map.getLayer('ripio')) map.setPaintProperty('ripio','line-opacity',0.55);
+  if (map.getLayer('ripio'))      map.setPaintProperty('ripio','line-opacity',0.9);
+  if (map.getLayer('ripio-glow')) map.setPaintProperty('ripio-glow','line-opacity',0.15);
   // Clear route
   map.getSource('ruta-activa').setData({ type:'FeatureCollection', features:[] });
   document.querySelectorAll('.plan-dest').forEach(d => d.classList.remove('sel'));
