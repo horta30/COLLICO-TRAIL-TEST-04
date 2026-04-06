@@ -370,6 +370,14 @@ function loadTotem() {
 }
 
 function loadPOIs() {
+  // Acceso Principal — sin animacion
+  const elAcceso = document.createElement('div');
+  elAcceso.style.cssText = 'font-size:22px;cursor:pointer;filter:drop-shadow(0 2px 6px rgba(0,0,0,.7));';
+  elAcceso.textContent = '🚗';
+  elAcceso.addEventListener('click', () => showNotif('🚗','Acceso Principal','Entrada principal al Parque Collico','#A78BFA'));
+  new maplibregl.Marker({ element:elAcceso, anchor:'center' })
+    .setLngLat([-73.205669, -39.818589]).addTo(map);
+
   // Estacionamiento — sin animacion
   const elParking = document.createElement('div');
   elParking.style.cssText = 'font-size:22px;cursor:pointer;filter:drop-shadow(0 2px 6px rgba(0,0,0,.7));';
