@@ -333,6 +333,7 @@ function setMapStyle(style, btn) {
 map.on('load', () => {
   loadSenderos();
   loadTotem();
+  loadPOIs();
   loadRipio();
   initRutaLayer();
   initFromURL();
@@ -366,6 +367,49 @@ function loadTotem() {
   el.style.cssText = 'font-size:22px;cursor:pointer;filter:drop-shadow(0 2px 6px rgba(0,0,0,.6));';
   el.addEventListener('click', () => showNotif('🗺️','Tótem de Acceso','Punto de partida · Planifica tu ruta desde aquí','#3EC9A7'));
   new maplibregl.Marker({ element:el, anchor:'center' }).setLngLat(COLLICO_CONFIG.totem).addTo(map);
+}
+
+function loadPOIs() {
+  const pois = [
+    {
+      emoji: '🅿️',
+      nombre: 'Estacionamiento',
+      desc: 'Estacionamiento Parque Collico · Acceso vehicular',
+      color: '#60A5FA',
+      lng: -73.203214, lat: -39.818169,
+      size: '24px'
+    },
+    {
+      emoji: '🔭',
+      nombre: 'Mirador Kunstmann',
+      desc: 'Vista panorámica del valle y la ciudad de Valdivia',
+      color: '#4CC9F0',
+      lng: -73.198867, lat: -39.823763,
+      size: '22px'
+    },
+    {
+      emoji: '🐆',
+      nombre: 'Mirador del Puma',
+      desc: 'Cima del sendero · Vista hacia los Andes y el bosque nativo',
+      color: '#40916C',
+      lng: -73.154589, lat: -39.835537,
+      size: '22px'
+    }
+  ];
+
+  pois.forEach(poi => {
+    const el = document.createElement('div');
+    el.style.cssText = 'font-size:'+poi.size+';cursor:pointer;filter:drop-shadow(0 2px 6px rgba(0,0,0,.7));transition:transform .15s;';
+    el.textContent = poi.emoji;
+    el.addEventListener('click', () => {
+      el.style.transform = 'scale(1.3)';
+      setTimeout(() => el.style.transform = 'scale(1)', 300);
+      showNotif(poi.emoji, poi.nombre, poi.desc, poi.color);
+    });
+    new maplibregl.Marker({ element:el, anchor:'center' })
+      .setLngLat([poi.lng, poi.lat])
+      .addTo(map);
+  });
 }
 
 function loadRipio() {
