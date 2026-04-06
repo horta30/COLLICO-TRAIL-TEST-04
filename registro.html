@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Collico · Registro</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --bg:   #080C0A;
+      --teal: #3EC9A7;
+      --t2:   rgba(62,201,167,0.12);
+      --w:    #F5F9F7;
+      --m:    rgba(245,249,247,0.48);
+      --dim:  rgba(245,249,247,0.06);
+      --line: rgba(245,249,247,0.08);
+    }
+    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+    body { font-family:'Inter',sans-serif; background:var(--bg); color:var(--w); min-height:100svh; display:flex; flex-direction:column; -webkit-font-smoothing:antialiased; }
+
+    header {
+      padding:16px 20px;
+      display:flex; align-items:center; justify-content:space-between;
+      border-bottom:1px solid var(--line);
+    }
+    .back {
+      display:flex; align-items:center; gap:6px;
+      color:var(--m); text-decoration:none;
+      font-size:13px; font-weight:500;
+    }
+    .hd-tag { font-size:11px; font-weight:600; color:var(--teal); letter-spacing:.5px; }
+
+    main { flex:1; padding:36px 20px 56px; max-width:420px; margin:0 auto; width:100%; }
+
+    .kicker {
+      display:flex; align-items:center; gap:8px;
+      font-size:10px; font-weight:600;
+      letter-spacing:3px; text-transform:uppercase;
+      color:var(--teal); margin-bottom:12px;
+    }
+    .kicker::before { content:''; display:block; width:14px; height:1px; background:var(--teal); }
+
+    h1 {
+      font-family:'Syne',sans-serif;
+      font-size:32px; font-weight:800;
+      letter-spacing:-1px; line-height:1.1;
+      margin-bottom:8px;
+    }
+    .sub { font-size:14px; color:var(--m); line-height:1.6; margin-bottom:36px; }
+
+    /* ACTIVIDAD */
+    .act-lbl { font-size:10px; font-weight:600; letter-spacing:2px; text-transform:uppercase; color:var(--m); margin-bottom:10px; }
+    .act-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:28px; }
+    .act-btn {
+      padding:15px 10px; text-align:center;
+      background:var(--dim); border:1.5px solid var(--line);
+      border-radius:12px; cursor:pointer;
+      transition:border-color .15s, background .15s;
+      position:relative; -webkit-tap-highlight-color:transparent;
+    }
+    .act-btn:not(.off):active { border-color:var(--teal); background:var(--t2); }
+    .act-btn.sel { border-color:var(--teal); background:var(--t2); }
+    .act-btn.off { opacity:.3; cursor:not-allowed; }
+    .soon-tag {
+      position:absolute; top:6px; right:6px;
+      font-size:7px; font-weight:700;
+      letter-spacing:1px; text-transform:uppercase;
+      color:var(--m); background:var(--dim);
+      padding:2px 5px; border-radius:4px;
+    }
+    .a-em { font-size:22px; margin-bottom:5px; }
+    .a-nm { font-family:'Syne',sans-serif; font-size:12px; font-weight:700; }
+
+    /* GPS HINT */
+    .gps-row {
+      display:flex; align-items:center; gap:10px;
+      padding:12px 14px; margin-bottom:24px;
+      background:var(--t2); border:1px solid rgba(62,201,167,.2);
+      border-radius:12px;
+    }
+    .gps-dot { width:7px; height:7px; border-radius:50%; background:var(--teal); flex-shrink:0; animation:pg 1.5s infinite; }
+    @keyframes pg { 0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(1.5)} }
+    .gps-txt { font-size:12px; color:var(--teal); font-weight:600; }
+    .gps-txt span { color:var(--m); font-weight:400; }
+
+    /* FIELDS */
+    .field { margin-bottom:14px; }
+    .field label { display:block; font-size:10px; font-weight:600; letter-spacing:1.5px; text-transform:uppercase; color:var(--m); margin-bottom:7px; }
+    .field input {
+      width:100%; padding:14px; font-size:16px;
+      background:var(--dim); border:1.5px solid var(--line);
+      border-radius:12px; color:var(--w);
+      font-family:inherit; outline:none;
+      transition:border-color .15s;
+      -webkit-appearance:none;
+    }
+    .field input::placeholder { color:rgba(245,249,247,.2); }
+    .field input:focus { border-color:var(--teal); background:var(--t2); }
+    .phone-row { display:flex; gap:8px; }
+    .prefix { padding:14px 12px; background:var(--dim); border:1.5px solid var(--line); border-radius:12px; color:var(--m); font-size:15px; white-space:nowrap; flex-shrink:0; }
+
+    /* SUBMIT */
+    .submit {
+      width:100%; padding:17px;
+      background:var(--teal); color:#060C09;
+      font-family:'Syne',sans-serif; font-size:16px; font-weight:800;
+      border:none; border-radius:50px; cursor:pointer;
+      display:flex; align-items:center; justify-content:center; gap:10px;
+      -webkit-tap-highlight-color:transparent;
+      transition:background .15s;
+    }
+    .submit:active { background:#5DD9BA; }
+
+    .legal { text-align:center; font-size:10px; color:rgba(245,249,247,.18); margin-top:16px; line-height:1.8; }
+  </style>
+</head>
+<body>
+
+<script>
+  if (sessionStorage.getItem('collico_v')) {
+    window.location.replace('mapa.html');
+  }
+</script>
+
+<header>
+  <a href="landing.html" class="back">
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+    Volver
+  </a>
+  <span class="hd-tag">Parque Collico</span>
+</header>
+
+<main>
+  <div class="kicker">Registro de visita</div>
+  <h1>Tu acceso<br/>al bosque.</h1>
+  <p class="sub">Un registro rápido activa el GPS y las notificaciones en terreno.</p>
+
+  <div class="act-lbl">¿Cómo llegas hoy?</div>
+  <div class="act-grid">
+    <div class="act-btn" data-act="trekking" onclick="sel(this)">
+      <div class="a-em">🥾</div><div class="a-nm">Trekking</div>
+    </div>
+    <div class="act-btn" data-act="trail_running" onclick="sel(this)">
+      <div class="a-em">🏃</div><div class="a-nm">Trail Running</div>
+    </div>
+    <div class="act-btn off">
+      <span class="soon-tag">Pronto</span>
+      <div class="a-em">🚵</div><div class="a-nm">MTB</div>
+    </div>
+    <div class="act-btn off">
+      <span class="soon-tag">Pronto</span>
+      <div class="a-em">🚶</div><div class="a-nm">Familiar</div>
+    </div>
+  </div>
+
+  <div class="gps-row">
+    <div class="gps-dot"></div>
+    <div class="gps-txt">GPS se activa al registrarte <span>· Sin instalar nada</span></div>
+  </div>
+
+  <div class="field">
+    <label>Nombre</label>
+    <input type="text" id="nombre" placeholder="Tu nombre" autocomplete="given-name"/>
+  </div>
+  <div class="field">
+    <label>Email</label>
+    <input type="email" id="email" placeholder="tu@email.com" autocomplete="email"/>
+  </div>
+  <div class="field">
+    <label>Teléfono</label>
+    <div class="phone-row">
+      <div class="prefix">+56 9</div>
+      <input type="tel" id="tel" placeholder="8 dígitos" maxlength="8"/>
+    </div>
+  </div>
+
+  <button class="submit" onclick="go()">
+    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    Entrar al Parque con GPS
+  </button>
+
+  <p class="legal">Al continuar aceptas el uso de geolocalización para navegación en terreno.<br/>Tus datos no se comparten con terceros.</p>
+</main>
+
+<script>
+  let actSel = null;
+  function sel(el) {
+    document.querySelectorAll('.act-btn:not(.off)').forEach(b => b.classList.remove('sel'));
+    el.classList.add('sel');
+    actSel = el.dataset.act;
+  }
+  function go() {
+    const v = {
+      nombre: document.getElementById('nombre').value.trim() || 'Visitante',
+      email:  document.getElementById('email').value.trim(),
+      tel:    document.getElementById('tel').value.trim(),
+      actividad: actSel || 'trekking',
+      ts: new Date().toISOString()
+    };
+    sessionStorage.setItem('collico_v', JSON.stringify(v));
+    window.location.href = 'mapa.html?actividad=' + v.actividad;
+  }
+</script>
+</body>
+</html>
