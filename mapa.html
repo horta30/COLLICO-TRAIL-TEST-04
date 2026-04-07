@@ -637,6 +637,36 @@ map.on('click', e => {
   if (!f.length) closePlan();
 });
 
+// ── FIREBASE GPS PUBLISHING ────────────────────────────────
+let fbRef = null;
+
+function initFirebaseMonitor() {
+  try {
+    const v = JSON.parse(sessionStorage.getItem('collico_v') || '{}');
+    if (!v.uid) return;
+    const waitForFB = () => {
+      if (!window._db || !window._ref) { setTimeout(waitForFB, 200); return; }
+      fbRef = window._ref(window._db, 'visitantes/' + v.uid);
+      if (window._onDisconnect) window._onDisconnect(fbRef).remove();
+    };
+    waitForFB();
+  } catch(e) { console.warn('Firebase init:', e); }
+}
+
+function publishGPS(lat, lng, acc) {
+  if (!fbRef || !window._set) return;
+  try {
+    const v = JSON.parse(sessionStorage.getItem('collico_v') || '{}');
+    window._set(fbRef, {
+      nombre: v.nombre || 'Visitante',
+      email:  v.email  || '',
+      lat, lng,
+      acc: Math.round(acc),
+      ts: Date.now()
+    });
+  } catch(e) { console.warn('GPS publish:', e); }
+}
+
 // ── GPS ────────────────────────────────────────────────────
 function toggleGPS() { S.gps ? stopGPS() : startGPS(); }
 
@@ -666,6 +696,7 @@ function onPos(pos) {
     S.marker = new maplibregl.Marker({ element:el, anchor:'center' }).setLngLat([lng,lat]).addTo(map);
   } else { S.marker.setLngLat([lng,lat]); }
   document.getElementById('tb-sub').textContent = 'GPS activo · ±'+Math.round(acc)+'m';
+  publishGPS(lat, lng, acc);
   const alerts = checkProximity(lat, lng);
   if (alerts.length) {
     const a = alerts[0];
