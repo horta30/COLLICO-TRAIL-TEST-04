@@ -262,18 +262,18 @@ function go() {
   const uid = 'v_' + Date.now() + '_' + Math.random().toString(36).slice(2,7);
   const ts  = new Date().toISOString();
 
-  // 1. Enviar a Google Sheets
-  const params = new URLSearchParams({
-    nombre,
-    email,
-    telefono: '+569' + tel,
-    parque: 'Parque Collico',
-    fecha: ts,
-    uid
-  });
+  // 1. Enviar a Google Sheets via POST
+  const formData = new FormData();
+  formData.append('nombre',    nombre);
+  formData.append('email',     email);
+  formData.append('telefono',  '+569' + tel);
+  formData.append('ubicacion', 'Parque Collico · Valdivia');
+  formData.append('locKey',    'collico');
+  formData.append('timestamp', ts);
+  formData.append('aceptado',  true);
 
-  fetch(APPS_SCRIPT_URL + '?' + params.toString(), { method:'GET', mode:'no-cors' })
-    .catch(() => {}); // no-cors no retorna respuesta — continuar igual
+  fetch(APPS_SCRIPT_URL, { method:'POST', body: formData, mode:'no-cors' })
+    .catch(() => {});
 
   // 2. Guardar en sessionStorage
   const visitante = { nombre, email, tel, uid, monitoreo: true, ts };
